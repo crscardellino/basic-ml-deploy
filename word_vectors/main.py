@@ -55,7 +55,7 @@ async def lifespan(app: FastAPI):
     """
     Lifespan function that runs as startup and shutdown function for FastAPI.
     """
-    config_path = os.getenv("FASTTEXT_ML_CONFIG", "./config.yaml")
+    config_path = os.getenv("FASTTEXT_ML_CONFIG", "./config/config.yaml")
     logger.info(f"Loading configuration for FastText App from {config_path}.")
     config.config = OmegaConf.load(config_path)
     logger.info("Loading models for FastText App.")

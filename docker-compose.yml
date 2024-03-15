@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  word_vectors:
+    build:
+      context: .
+      dockerfile: ./word_vectors/Dockerfile
+    container_name: word_vectors
+    command: uvicorn word_vectors.main:app --host=0.0.0.0 --port=3000
+    expose:
+      - 3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/fasttext/health"]
+      interval: 3m
+      timeout: 30s
+      retries: 3
+      start_period: 3m
+    restart: always
+    volumes:
+      - ./:/word_vectors
+  nginx:
+    image: nginx:latest
+    container_name: word_vectors_nginx
+    ports:
+      - 8080:8080
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./logs:/var/log/nginx
+    depends_on:
+      - word_vectors
