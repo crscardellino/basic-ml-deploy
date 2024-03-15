@@ -1,0 +1,2 @@
+model_location: ./models/cc.en.300.bin
+model_precision: 5
