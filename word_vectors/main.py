@@ -1,9 +1,18 @@
+"""
+This is the main application that loads and serves a FastText model via a REST
+API using FastAPI.
+
+    MIT License
+    Copyright (c) 2024 Cristian Cardellino.
+"""
+
 import logging
 import os
 import fasttext
 import time
 
 from contextlib import asynccontextmanager
+from dataclasses import dataclass
 from fastapi import APIRouter, HTTPException, FastAPI
 from omegaconf import DictConfig, OmegaConf
 from pydantic import BaseModel
@@ -11,11 +20,12 @@ from pydantic import BaseModel
 logger = logging.getLogger(__name__)
 
 
-class GlobalConfig(BaseModel):
+@dataclass
+class GlobalConfig:
     """
     Class to handle the configuration globally.
     The class is instantiated during the startup event of a FastAPI app.
-    It is based on a Pydantic's BaseModel.
+    It is a Python dataclass.
 
     Attributes
     ----------
@@ -26,12 +36,7 @@ class GlobalConfig(BaseModel):
             The FastText model.
     """
     config: DictConfig = OmegaConf.create()
-    model: fasttext.FastText._FastText = None
-
-    class Config:
-        # Required since the DictConfig and FastText model are not implemented
-        # by Pydantic
-        arbitrary_types_allowed: bool = True
+    model: fasttext.FastText._FastText | None = None
 
 
 class WordVectorArgs(BaseModel):
